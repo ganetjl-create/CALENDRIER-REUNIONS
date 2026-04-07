@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planning Association</title>
+<style>
+body { font-family: Arial; background:#f4f6f9; margin:20px; }
+h1 { text-align:center; }
+table { border-collapse: collapse; width:100%; background:white; }
+th, td { border:1px solid #ddd; padding:6px; text-align:center; }
+th { background:#4CAF50; color:white; }
+input { width:100%; border:none; text-align:center; }
+button { margin:10px; padding:10px; border:none; background:#4CAF50; color:white; cursor:pointer; }
+.summary { margin-top:20px; background:white; padding:10px; }
+</style>
+</head>
+<body>
+
+<h1>📅 Disponibilités Association</h1>
+
+<button onclick="addRow()">➕ Ajouter un membre</button>
+<button onclick="calculate()">📊 Calculer le meilleur créneau</button>
+
+<table id="planning">
+<thead>
+<tr>
+<th>Nom / Prénom</th>
+<th>10h</th><th>11h</th><th>12h</th><th>13h</th><th>14h</th>
+<th>15h</th><th>16h</th><th>17h</th><th>18h</th><th>19h</th><th>20h</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<div class="summary" id="summary"></div>
+
+<script>
+function addRow(){
+ let table = document.getElementById("planning").getElementsByTagName('tbody')[0];
+ let row = table.insertRow();
+ let cell = row.insertCell();
+ cell.innerHTML = '<input placeholder="Nom Prénom">';
+ for(let i=0;i<11;i++){
+   let c = row.insertCell();
+   c.innerHTML = '<input type="checkbox">';
+ }
+}
+
+function calculate(){
+ let counts = Array(11).fill(0);
+ let rows = document.querySelectorAll("tbody tr");
+ rows.forEach(r=>{
+   let checks = r.querySelectorAll("input[type=checkbox]");
+   checks.forEach((c,i)=>{ if(c.checked) counts[i]++; });
+ });
+ let hours=["10h","11h","12h","13h","14h","15h","16h","17h","18h","19h","20h"];
+ let max = Math.max(...counts);
+ let best = hours[counts.indexOf(max)];
+ let html = '<h3>Résultats :</h3>';
+ counts.forEach((c,i)=>{ html += hours[i]+" : "+c+" disponibles<br>"; });
+ html += '<h2>🏆 Meilleur créneau : '+best+' ('+max+' personnes)</h2>';
+ document.getElementById("summary").innerHTML = html;
+}
+
+// ajouter quelques lignes par défaut
+for(let i=0;i<5;i++) addRow();
+</script>
+
+</body>
+</html>
